@@ -14,6 +14,10 @@ use App\Question;
 
 class QuestionsController extends Controller
 {
+    public function __construct() {
+        $this->middleware('auth', ['except' => ['index', 'show']]);
+    }
+
     public function index()
     {
         return view('questions.index')->with('questions', Question::with('user')->latest()->paginate(5));
@@ -33,22 +37,26 @@ class QuestionsController extends Controller
 
     public function show(Question $question)
     {
-        //
+        $question->increment('views');
+        return view('questions.show', compact('question'));
     }
 
     public function edit(Question $question)
     {
+        $this->authorize("update", $question);
         return view('questions.edit', compact('question'));
     }
 
     public function update(AskQuestionRequest $request, Question $question)
     {
+        $this->authorize("update", $question);
         $question->update($request->only('title', 'body'));
         return redirect()->route('questions.index')->with('success', "Your questions has been updated");
     }
 
     public function destroy(Question $question)
     {
+        $this->authorize("delete", $question);
         $question->delete();
         return redirect()->route('questions.index')->with('success', "Your questions has been deleted");
     }

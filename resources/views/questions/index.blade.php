@@ -9,7 +9,8 @@
                         <div class="d-flex align-items-center">
                             <h2>Questions</h2>
                             <div class="ml-auto">
-                                <a href="{{ route('questions.create') }}" class="btn btn-outline-secondary">Ask Questions</a>
+                                <a href="{{ route('questions.create') }}" class="btn btn-outline-secondary">Ask
+                                    Questions</a>
                             </div>
                         </div>
                     </div>
@@ -33,12 +34,20 @@
                                     <div class="d-flex align-items-center">
                                         <h3 class="mt-0"><a href="{{ $question->url }}">{{ $question->title }}</a></h3>
                                         <div class="ml-auto">
-                                            <a href="{{ route('questions.edit', $question->id) }}" class="btn btn-sm btn-outline-info">Edit</a>
-                                            <form action="{{ route('questions.destroy', $question->id) }}" class="form-delete" method="post">
-                                                @method('DELETE')
-                                                @csrf
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are You sure?')">Delete</button>
-                                            </form>
+                                            @can('update', $question)
+                                                <a href="{{ route('questions.edit', $question->id) }}"
+                                                   class="btn btn-sm btn-outline-info">Edit</a>
+                                            @endcan
+                                            @can('delete', $question)
+                                                <form action="{{ route('questions.destroy', $question->id) }}"
+                                                      class="form-delete" method="post">
+                                                    @method('DELETE')
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                            onclick="return confirm('Are You sure?')">Delete
+                                                    </button>
+                                                </form>
+                                            @endcan
                                         </div>
                                     </div>
                                     <p class="lead">
@@ -51,7 +60,7 @@
                             </div>
                             <hr>
                         @endforeach
-                            {{ $questions->links() }}
+                        {{ $questions->links() }}
                     </div>
                 </div>
             </div>
