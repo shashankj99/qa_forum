@@ -20,7 +20,7 @@ class QuestionsController extends Controller
 
     public function index()
     {
-        return view('questions.index')->with('questions', Question::with('user')->latest()->paginate(5));
+        return view('questions.index')->with('questions', Question::with('user')->latest()->paginate(10));
     }
 
     public function create()
