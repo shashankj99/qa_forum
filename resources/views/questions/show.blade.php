@@ -36,10 +36,22 @@
 
                                 {{-- favourite a question --}}
                                 <a title="Click to mark as favourite question (click again to undo)"
-                                   class="favourite mt-2 favourited">
+                                   class="favourite mt-2 {{ \Illuminate\Support\Facades\Auth::guest() ? 'off' : ($question->is_favourite ? 'favourited' : '') }}"
+                                   onclick="event.preventDefault(); document.getElementById('favourite-question-{{ $question->id }}').submit();"
+                                >
                                     <i class="fas fa-star fa-2x"></i>
-                                    <span class="favourites-count">123</span>
+
+                                    {{-- total favourite count --}}
+                                    <span class="favourites-count">{{ $question->favourites_count }}</span>
                                 </a>
+
+                                {{-- mark as favourite question form --}}
+                                <form action="/questions/{{$question->id}}/favourite" method="post" style="display: none" id="favourite-question-{{ $question->id }}">
+                                    @csrf
+                                    @if($question->is_favourite)
+                                        @method('DELETE')
+                                    @endif
+                                </form>
 
                             </div>
                             <div class="media-body">

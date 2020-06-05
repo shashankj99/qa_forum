@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -59,5 +61,26 @@ class Question extends Model
     public function acceptBestAnswer($answer) {
         $this->best_answer_id = $answer->id;
         $this->save();
+    }
+
+    // pivot table function
+    public function favourites() {
+        return $this->belongsToMany(User::class, 'favourites')
+            ->withTimestamps();
+    }
+
+    // function to CHECK whether the question is marked favourite by the user
+    public function isFavourite(){
+        return $this->favourites()->where('user_id', Auth::id())->count() > 0;
+    }
+
+    // function to GET if the question is favourite
+    public function getIsFavouriteAttribute(){
+        return $this->isFavourite();
+    }
+
+    // function for favourite count of each question
+    public function getFavouritesCountAttribute(){
+        return $this->favourites->count();
     }
 }
