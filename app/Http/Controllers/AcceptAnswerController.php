@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Answer;
-use Illuminate\Http\Request;
+
+/**
+ * Class AcceptAnswerController
+ * @package App\Http\Controllers
+ * @author Shashank Jha shashankj677@gmail.com
+ */
 
 class AcceptAnswerController extends Controller
 {

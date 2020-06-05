@@ -20,22 +20,33 @@
 
                         <div class="media">
                             <div class="d-flex flex-column vote-controls">
+
+                                {{-- up vote <a> tag --}}
                                 <a title="This question is useful" class="vote-up">
                                     <i class="fas fa-caret-up fa-2x"></i>
                                 </a>
+
+                                {{-- total votes --}}
                                 <span class="votes-count">1230</span>
+
+                                {{-- down vote <a> tag --}}
                                 <a title="This question is not useful" class="vote-down off">
                                     <i class="fas fa-caret-down fa-2x"></i>
                                 </a>
+
+                                {{-- favourite a question --}}
                                 <a title="Click to mark as favourite question (click again to undo)"
                                    class="favourite mt-2 favourited">
                                     <i class="fas fa-star fa-2x"></i>
                                     <span class="favourites-count">123</span>
                                 </a>
+
                             </div>
                             <div class="media-body">
                                 {!! $question->body_html !!}
                                 <div class="float-right">
+
+                                    {{-- general Info column --}}
                                     <span class="text-muted">Question asked {{ $question->created_date }}</span>
                                     <div class="media mt-2">
                                         <a href="{{ $question->user->url }}" class="pr-2">
@@ -45,6 +56,7 @@
                                             <a href="{{ $question->user->url }}">{{ $question->user->name }}</a>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -53,12 +65,27 @@
             </div>
         </div>
 
+        {{-- display all answers to the question --}}
         @include('answers._index', [
             'answers_count' => $question->answers_count,
             'answers' => $question->answers
         ])
 
-        @include('answers._create')
+        {{-- show form only if the user is authenticated --}}
+        @auth
+            @include('answers._create')
+        @endauth
+        @guest
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body text-center bg-warning">
+                            <h4>Sign In to answer !!!</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endguest
 
     </div>
 @endsection

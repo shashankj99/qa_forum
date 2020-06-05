@@ -3,7 +3,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-title">
-                    {{-- make handle the grammer of the text "Answer" based on total answers --}}
+                    {{-- handle the grammer of the text "Answer" based on total answers --}}
                     <h2>{{ $answers_count . " " . \Illuminate\Support\Str::plural('Answer', $question->answers_count) }}</h2>
                 </div>
                 <hr>
