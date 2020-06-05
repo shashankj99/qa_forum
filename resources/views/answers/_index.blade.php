@@ -18,7 +18,7 @@
                                 <i class="fas fa-caret-down fa-2x"></i>
                             </a>
                             <a title="Mark this answer as the best answer"
-                               class="vote-accepted mt-2">
+                               class="{{ $answer->status }} mt-2">
                                 <i class="fas fa-check fa-2x"></i>
                             </a>
                         </div>
