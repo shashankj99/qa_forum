@@ -18,6 +18,12 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <style>
+        hr:last-child {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
