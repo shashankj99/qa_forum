@@ -94,4 +94,33 @@ class User extends Authenticatable
         $question->save();
     }
 
+    // function to handle voting an answer
+    public function voteAnswer(Answer $answer, $vote){
+        // assign the relationship method to a variable
+        $voteAnswers = $this->voteAnswers();
+
+        // check if the answer is already voted by the user
+        if($voteAnswers->where('votable_id', $answer->id)->exists())
+            // if voted then update existing record
+            $voteAnswers->updateExistingPivot($answer, ['vote' => $vote]);
+        else
+            // else create a new record
+            $voteAnswers->attach($answer, ['vote' => $vote]);
+
+        // getting all the votes of an answer using lazy eager loading
+        $answer->load('votes');
+
+        // sum all the down votes
+        $downVotes = (int) $answer->downVotes()->sum('vote');
+
+        // sum all the up votes
+        $upVotes = (int) $answer->upVotes()->sum('vote');
+
+        // assign the sum of up votes and down votes in the votes count property of answer
+        $answer->votes_count = $upVotes + $downVotes;
+
+        // save the record
+        $answer->save();
+    }
+
 }

@@ -69,4 +69,14 @@ class Answer extends Model
     public function votes() {
         return $this->morphToMany(User::class, 'votable');
     }
+
+    // function to get all up votes
+    public function upVotes(){
+        return $this->votes()->wherePivot('vote', 1);
+    }
+
+    // function to get all down votes
+    public function downVotes(){
+        return $this->votes()->wherePivot('vote', -1);
+    }
 }

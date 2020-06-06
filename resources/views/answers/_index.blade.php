@@ -16,18 +16,36 @@
 
                         <div class="d-flex flex-column vote-controls">
 
-                            {{-- up-vote a tag --}}
-                            <a title="This answer is useful" class="vote-up">
+                            {{-- up vote <a> tag --}}
+                            <a title="This answer is useful"
+                               class="vote-up {{ \Illuminate\Support\Facades\Auth::guest() ? 'off' : '' }}"
+                               onclick="event.preventDefault(); document.getElementById('up-vote-answer-{{ $answer->id }}').submit();"
+                            >
                                 <i class="fas fa-caret-up fa-2x"></i>
                             </a>
 
-                            {{-- vote count --}}
-                            <span class="votes-count">1230</span>
+                            {{-- up vote form --}}
+                            <form action="/answers/{{$answer->id}}/vote" method="post" style="display: none" id="up-vote-answer-{{ $answer->id }}">
+                                @csrf
+                                <input type="hidden" name="vote" value="1">
+                            </form>
 
-                            {{-- down-vote a tag --}}
-                            <a title="This answer is not useful" class="vote-down off">
+                            {{-- vote count --}}
+                            <span class="votes-count">{{ $answer->votes_count }}</span>
+
+                            {{-- down vote <a> tag --}}
+                            <a title="This question is not useful"
+                               class="vote-down {{ \Illuminate\Support\Facades\Auth::guest() ? 'off' : '' }}"
+                               onclick="event.preventDefault(); document.getElementById('down-vote-answer-{{ $answer->id }}').submit();"
+                            >
                                 <i class="fas fa-caret-down fa-2x"></i>
                             </a>
+
+                            {{-- down vote form --}}
+                            <form action="/answers/{{$answer->id}}/vote" method="post" style="display: none" id="down-vote-answer-{{ $answer->id }}">
+                                @csrf
+                                <input type="hidden" name="vote" value="-1">
+                            </form>
 
                             {{-- accept answer policy check --}}
                             @can('accept', $answer)
