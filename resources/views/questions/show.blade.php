@@ -19,74 +19,18 @@
                         <hr>
 
                         <div class="media">
-                            <div class="d-flex flex-column vote-controls">
+                            {{-- include vote view --}}
+                            @include('shared._vote', ['model' => $question])
 
-                                {{-- up vote <a> tag --}}
-                                <a title="This question is useful"
-                                   class="vote-up {{ \Illuminate\Support\Facades\Auth::guest() ? 'off' : '' }}"
-                                   onclick="event.preventDefault(); document.getElementById('up-vote-question-{{ $question->id }}').submit();"
-                                >
-                                    <i class="fas fa-caret-up fa-2x"></i>
-                                </a>
-
-                                {{-- up vote form --}}
-                                <form action="/questions/{{$question->id}}/vote" method="post" style="display: none" id="up-vote-question-{{ $question->id }}">
-                                    @csrf
-                                    <input type="hidden" name="vote" value="1">
-                                </form>
-
-                                {{-- total votes --}}
-                                <span class="votes-count">{{ $question->votes_count }}</span>
-
-                                {{-- down vote <a> tag --}}
-                                <a title="This question is not useful"
-                                   class="vote-down {{ \Illuminate\Support\Facades\Auth::guest() ? 'off' : '' }}"
-                                   onclick="event.preventDefault(); document.getElementById('down-vote-question-{{ $question->id }}').submit();"
-                                >
-                                    <i class="fas fa-caret-down fa-2x"></i>
-                                </a>
-
-                                {{-- down vote form --}}
-                                <form action="/questions/{{$question->id}}/vote" method="post" style="display: none" id="down-vote-question-{{ $question->id }}">
-                                    @csrf
-                                    <input type="hidden" name="vote" value="-1">
-                                </form>
-
-                                {{-- favourite a question --}}
-                                <a title="Click to mark as favourite question (click again to undo)"
-                                   class="favourite mt-2 {{ \Illuminate\Support\Facades\Auth::guest() ? 'off' : ($question->is_favourite ? 'favourited' : '') }}"
-                                   onclick="event.preventDefault(); document.getElementById('favourite-question-{{ $question->id }}').submit();"
-                                >
-                                    <i class="fas fa-star fa-2x"></i>
-
-                                    {{-- total favourite count --}}
-                                    <span class="favourites-count">{{ $question->favourites_count }}</span>
-                                </a>
-
-                                {{-- mark as favourite question form --}}
-                                <form action="/questions/{{$question->id}}/favourite" method="post" style="display: none" id="favourite-question-{{ $question->id }}">
-                                    @csrf
-                                    @if($question->is_favourite)
-                                        @method('DELETE')
-                                    @endif
-                                </form>
-
-                            </div>
                             <div class="media-body">
                                 {!! $question->body_html !!}
-                                <div class="float-right">
-
-                                    {{-- general Info column --}}
-                                    <span class="text-muted">Question asked {{ $question->created_date }}</span>
-                                    <div class="media mt-2">
-                                        <a href="{{ $question->user->url }}" class="pr-2">
-                                            <img src="{{ $question->user->avatar }}" alt="">
-                                        </a>
-                                        <div class="media-body mt-1">
-                                            <a href="{{ $question->user->url }}">{{ $question->user->name }}</a>
-                                        </div>
+                                <div class="row">
+                                    <div class="col-4"></div>
+                                    <div class="col-4"></div>
+                                    <div class="col-4">
+                                        {{-- general Info column --}}
+                                        @include('shared._author', ['model' => $question, 'label' => "Question Asked"])
                                     </div>
-
                                 </div>
                             </div>
                         </div>

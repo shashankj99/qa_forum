@@ -14,64 +14,8 @@
                 @foreach ($answers as $answer)
                     <div class="media">
 
-                        <div class="d-flex flex-column vote-controls">
-
-                            {{-- up vote <a> tag --}}
-                            <a title="This answer is useful"
-                               class="vote-up {{ \Illuminate\Support\Facades\Auth::guest() ? 'off' : '' }}"
-                               onclick="event.preventDefault(); document.getElementById('up-vote-answer-{{ $answer->id }}').submit();"
-                            >
-                                <i class="fas fa-caret-up fa-2x"></i>
-                            </a>
-
-                            {{-- up vote form --}}
-                            <form action="/answers/{{$answer->id}}/vote" method="post" style="display: none" id="up-vote-answer-{{ $answer->id }}">
-                                @csrf
-                                <input type="hidden" name="vote" value="1">
-                            </form>
-
-                            {{-- vote count --}}
-                            <span class="votes-count">{{ $answer->votes_count }}</span>
-
-                            {{-- down vote <a> tag --}}
-                            <a title="This question is not useful"
-                               class="vote-down {{ \Illuminate\Support\Facades\Auth::guest() ? 'off' : '' }}"
-                               onclick="event.preventDefault(); document.getElementById('down-vote-answer-{{ $answer->id }}').submit();"
-                            >
-                                <i class="fas fa-caret-down fa-2x"></i>
-                            </a>
-
-                            {{-- down vote form --}}
-                            <form action="/answers/{{$answer->id}}/vote" method="post" style="display: none" id="down-vote-answer-{{ $answer->id }}">
-                                @csrf
-                                <input type="hidden" name="vote" value="-1">
-                            </form>
-
-                            {{-- accept answer policy check --}}
-                            @can('accept', $answer)
-                                {{-- mark as best answer <a>..</a> --}}
-                                <a title="Mark this answer as the best answer"
-                                   class="{{ $answer->status }} mt-2"
-                                    onclick="event.preventDefault(); document.getElementById('accept-answer-{{ $answer->id }}').submit();"
-                                >
-                                    <i class="fas fa-check fa-2x"></i>
-                                </a>
-
-                                {{-- mark as best answer form --}}
-                                <form action="{{ route('answers.accept', $answer->id) }}" method="post" style="display: none" id="accept-answer-{{ $answer->id }}">
-                                    @csrf
-                                </form>
-                            @else
-                                @if($answer->is_best)
-                                    <a title="This answer was marked best by the question owner"
-                                       class="{{ $answer->status }} mt-2"
-                                    >
-                                        <i class="fas fa-check fa-2x"></i>
-                                    </a>
-                                @endif
-                            @endcan
-
-                        </div>
+                        {{-- include vote view --}}
+                        @include('shared._vote', ['model' => $answer])
 
                         <div class="media-body">
 
@@ -106,17 +50,7 @@
                                 <div class="col-4">
 
                                     {{-- general Info column --}}
-                                    <div class="float-right">
-                                        <span class="text-muted">Answered {{ $answer->created_date }}</span>
-                                        <div class="media mt-2">
-                                            <a href="{{ $answer->user->url }}" class="pr-2">
-                                                <img src="{{ $answer->user->avatar }}" alt="">
-                                            </a>
-                                            <div class="media-body mt-1">
-                                                <a href="{{ $answer->user->url }}">{{ $answer->user->name }}</a>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @include('shared._author', ['model' => $answer, 'label' => "Answered"])
 
                                 </div>
 

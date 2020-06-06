@@ -65,33 +65,38 @@ class User extends Authenticatable
         return $this->morphedByMany(Answer::class, 'votable');
     }
 
+    private function _vote($relationship, $model, $vote) {
+        // check if the question/answer is already voted by the user
+        if($relationship->where('votable_id', $model->id)->exists())
+            // if voted then update existing record
+            $relationship->updateExistingPivot($model, ['vote' => $vote]);
+        else
+            // else create a new record
+            $relationship->attach($model, ['vote' => $vote]);
+
+        // getting all the votes of a question/answer using lazy eager loading
+        $model->load('votes');
+
+        // sum all the down votes
+        $downVotes = (int) $model->downVotes()->sum('vote');
+
+        // sum all the up votes
+        $upVotes = (int) $model->upVotes()->sum('vote');
+
+        // assign the sum of up votes and down votes in the votes count property of model
+        $model->votes_count = $upVotes + $downVotes;
+
+        // save the record
+        $model->save();
+    }
+
     // function to handle voting a question
     public function voteQuestion(Question $question, $vote){
         // assign the relationship method to a variable
         $voteQuestions = $this->voteQuestions();
 
-        // check if the question is already voted by the user
-        if($voteQuestions->where('votable_id', $question->id)->exists())
-            // if voted then update existing record
-            $voteQuestions->updateExistingPivot($question, ['vote' => $vote]);
-        else
-            // else create a new record
-            $voteQuestions->attach($question, ['vote' => $vote]);
-
-        // getting all the votes of a question using lazy eager loading
-        $question->load('votes');
-
-        // sum all the down votes
-        $downVotes = (int) $question->downVotes()->sum('vote');
-
-        // sum all the up votes
-        $upVotes = (int) $question->upVotes()->sum('vote');
-
-        // assign the sum of up votes and down votes in the votes count property of question
-        $question->votes_count = $upVotes + $downVotes;
-
-        // save the record
-        $question->save();
+        // call the vote function
+        $this->_vote($voteQuestions, $question, $vote);
     }
 
     // function to handle voting an answer
@@ -99,28 +104,8 @@ class User extends Authenticatable
         // assign the relationship method to a variable
         $voteAnswers = $this->voteAnswers();
 
-        // check if the answer is already voted by the user
-        if($voteAnswers->where('votable_id', $answer->id)->exists())
-            // if voted then update existing record
-            $voteAnswers->updateExistingPivot($answer, ['vote' => $vote]);
-        else
-            // else create a new record
-            $voteAnswers->attach($answer, ['vote' => $vote]);
-
-        // getting all the votes of an answer using lazy eager loading
-        $answer->load('votes');
-
-        // sum all the down votes
-        $downVotes = (int) $answer->downVotes()->sum('vote');
-
-        // sum all the up votes
-        $upVotes = (int) $answer->upVotes()->sum('vote');
-
-        // assign the sum of up votes and down votes in the votes count property of answer
-        $answer->votes_count = $upVotes + $downVotes;
-
-        // save the record
-        $answer->save();
+        // call the vote function
+        $this->_vote($voteAnswers, $answer, $vote);
     }
 
 }

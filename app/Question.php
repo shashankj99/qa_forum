@@ -14,6 +14,9 @@ use Illuminate\Support\Str;
 
 class Question extends Model
 {
+    // use the votable trait
+    use VotableTrait;
+
     // add properties to insert items to DB in array form
     protected $fillable = ['title', 'body'];
 
@@ -83,19 +86,4 @@ class Question extends Model
         return $this->favourites->count();
     }
 
-    // many to many polymorphic relation with user for votes
-    public function votes() {
-        return $this->morphToMany(User::class, 'votable')
-            ->withTimestamps();
-    }
-
-    // function to get all up votes
-    public function upVotes(){
-        return $this->votes()->wherePivot('vote', 1);
-    }
-
-    // function to get all down votes
-    public function downVotes(){
-        return $this->votes()->wherePivot('vote', -1);
-    }
 }
