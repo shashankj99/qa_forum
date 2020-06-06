@@ -23,7 +23,7 @@
                                 <div class="d-flex flex-column counters">
                                     {{-- handle the grammer of the text "Votes" based on total Votes --}}
                                     <div class="vote">
-                                        <strong>{{ $question->votes }}</strong>&nbsp;{{ \Illuminate\Support\Str::plural('vote', $question->votes) }}
+                                        <strong>{{ $question->votes_count }}</strong>&nbsp;{{ \Illuminate\Support\Str::plural('vote', $question->votes_count) }}
                                     </div>
 
                                     {{-- add the CSS class based on answer &/or best answer --}}

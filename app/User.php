@@ -32,7 +32,6 @@ class User extends Authenticatable
 
     // function to replace the default show route
     public function getUrlAttribute() {
-//        return route('users.show', $this->id);
         return '#';
     }
 
@@ -53,6 +52,46 @@ class User extends Authenticatable
     public function favourites() {
         return $this->belongsToMany(Question::class, 'favourites')
             ->withTimestamps();
+    }
+
+    // many to many polymorphic relation with question for voting
+    public function voteQuestions() {
+        return $this->morphedByMany(Question::class, 'votable')
+            ->withTimestamps();
+    }
+
+    // many to many polymorphic relation with answer for voting
+    public function voteAnswers() {
+        return $this->morphedByMany(Answer::class, 'votable');
+    }
+
+    // function to handle voting a question
+    public function voteQuestion(Question $question, $vote){
+        // assign the relationship method to a variable
+        $voteQuestions = $this->voteQuestions();
+
+        // check if the question is already voted by the user
+        if($voteQuestions->where('votable_id', $question->id)->exists())
+            // if voted then update existing record
+            $voteQuestions->updateExistingPivot($question, ['vote' => $vote]);
+        else
+            // else create a new record
+            $voteQuestions->attach($question, ['vote' => $vote]);
+
+        // getting all the votes of a question using lazy eager loading
+        $question->load('votes');
+
+        // sum all the down votes
+        $downVotes = (int) $question->downVotes()->sum('vote');
+
+        // sum all the up votes
+        $upVotes = (int) $question->upVotes()->sum('vote');
+
+        // assign the sum of up votes and down votes in the votes count property of question
+        $question->votes_count = $upVotes + $downVotes;
+
+        // save the record
+        $question->save();
     }
 
 }

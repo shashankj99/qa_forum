@@ -22,17 +22,35 @@
                             <div class="d-flex flex-column vote-controls">
 
                                 {{-- up vote <a> tag --}}
-                                <a title="This question is useful" class="vote-up">
+                                <a title="This question is useful"
+                                   class="vote-up {{ \Illuminate\Support\Facades\Auth::guest() ? 'off' : '' }}"
+                                   onclick="event.preventDefault(); document.getElementById('up-vote-question-{{ $question->id }}').submit();"
+                                >
                                     <i class="fas fa-caret-up fa-2x"></i>
                                 </a>
 
+                                {{-- up vote form --}}
+                                <form action="/questions/{{$question->id}}/vote" method="post" style="display: none" id="up-vote-question-{{ $question->id }}">
+                                    @csrf
+                                    <input type="hidden" name="vote" value="1">
+                                </form>
+
                                 {{-- total votes --}}
-                                <span class="votes-count">1230</span>
+                                <span class="votes-count">{{ $question->votes_count }}</span>
 
                                 {{-- down vote <a> tag --}}
-                                <a title="This question is not useful" class="vote-down off">
+                                <a title="This question is not useful"
+                                   class="vote-down {{ \Illuminate\Support\Facades\Auth::guest() ? 'off' : '' }}"
+                                   onclick="event.preventDefault(); document.getElementById('down-vote-question-{{ $question->id }}').submit();"
+                                >
                                     <i class="fas fa-caret-down fa-2x"></i>
                                 </a>
+
+                                {{-- down vote form --}}
+                                <form action="/questions/{{$question->id}}/vote" method="post" style="display: none" id="down-vote-question-{{ $question->id }}">
+                                    @csrf
+                                    <input type="hidden" name="vote" value="-1">
+                                </form>
 
                                 {{-- favourite a question --}}
                                 <a title="Click to mark as favourite question (click again to undo)"
