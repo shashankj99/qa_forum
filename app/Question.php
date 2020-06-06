@@ -51,7 +51,7 @@ class Question extends Model
 
     // function to convert the body text into markup language
     public function getBodyHtmlAttribute() {
-        return \Parsedown::instance()->text($this->body);
+        return strip_tags($this->bodyHtml());
     }
 
     // one to many relation with answers
@@ -86,4 +86,18 @@ class Question extends Model
         return $this->favourites->count();
     }
 
+    // function to get the striped content
+    public function getExcerptAttribute() {
+        return $this->excerpt(250);
+    }
+
+    // function to strip tags
+    public function excerpt($length){
+        return Str::limit(strip_tags($this->bodyHtml()), $length);
+    }
+
+    // function to return mark up of the body text
+    public function bodyHtml(){
+        return \Parsedown::instance()->text($this->body);
+    }
 }
