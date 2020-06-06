@@ -18,7 +18,8 @@
                     <div class="card-body">
                         {{-- include flash messages --}}
                         @include('layouts._messages')
-                        @foreach($questions as $question)
+
+                        @forelse($questions as $question)
                             <div class="media">
                                 <div class="d-flex flex-column counters">
                                     {{-- handle the grammer of the text "Votes" based on total Votes --}}
@@ -66,13 +67,17 @@
                                     <p class="lead">
                                         Asked by:
                                         <a href="{{ $question->user->url }}">{{ $question->user->name }}</a>
-                                        <small class="text-muted">{{ $question->created_at }}</small>
+                                        <small class="text-muted">{{ $question->created_date }}</small>
                                     </p>
                                     {{ $question->excerpt(250) }}
                                 </div>
                             </div>
                             <hr>
-                        @endforeach
+                        @empty
+                            <div class="alert alert-warning">
+                                <strong>Sorry!</strong> There are no questions available
+                            </div>
+                        @endforelse
                         {{ $questions->links() }}
                     </div>
                 </div>

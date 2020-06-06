@@ -56,7 +56,8 @@ class Question extends Model
 
     // one to many relation with answers
     public function answers() {
-        return $this->hasMany(Answer::class);
+        // order answer by maximum no of votes
+        return $this->hasMany(Answer::class)->orderBy('votes_count', 'DESC');
     }
 
     // function to accept the best answer
