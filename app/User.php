@@ -25,6 +25,9 @@ class User extends Authenticatable
     // attributes that should be cast to native types.
     protected $casts = ['email_verified_at' => 'datetime'];
 
+    // append url and avatar as the property
+    protected $appends = ['url', 'avatar'];
+
     // one to many relation with question
     public function questions() {
         return $this->hasMany(Question::class);

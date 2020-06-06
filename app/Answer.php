@@ -18,6 +18,9 @@ class Answer extends Model
     // add properties to insert items to DB in array form
     protected $fillable = ['body', 'user_id'];
 
+    // append created date as the model property
+    protected $appends = ['created_date'];
+
     // many to one relation with question
     public function question() {
         return $this->belongsTo(Question::class);

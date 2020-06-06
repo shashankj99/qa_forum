@@ -20,6 +20,9 @@ class Question extends Model
     // add properties to insert items to DB in array form
     protected $fillable = ['title', 'body'];
 
+    // append created date as the model property
+    protected $appends = ['created_date'];
+
     // many to one relation with user
     public function user() {
         return $this->belongsTo(User::class);
